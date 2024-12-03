@@ -6,18 +6,18 @@ app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
 const data = [
-    { id: 1, name: "iphone 14", price: 30000 },
-    { id: 2, name: "iphone 15", price: 40000 },
-    { id: 3, name: "iphone 16", price: 50000 }
+    { id: 1, name: "iphone 14", price: 30000, isActive: true },
+    { id: 2, name: "iphone 15", price: 40000, isActive: true },
+    { id: 3, name: "iphone 16", price: 50000, isActive: true }
 ];
 
-app.get("/products/:id", (req: Request, res: Response) => {
+app.get("/product/:id", (req: Request, res: Response) => {
     res.render("product-details");
 
 });
 
 app.use("/products", (req: Request, res: Response) => {
-    res.render("products",{data:data});
+    res.render("products", { data: data });
 
 });
 

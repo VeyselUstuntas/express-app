@@ -9,10 +9,21 @@
 
 <body>
     <h1>Product</h1>
-    <p>
-        <%= data[0].name %>
-        <%= data[0].price %>
-    </p>
+
+
+    <ul>
+        <% data.forEach(element=> { %>
+            <% if (element.price>= 40000 && element.isActive) { %>
+                <li>
+                    <a href="/product/<%= element.id %>">
+                        <%= element.name %> - <%= element.price %>
+                    </a>
+                </li>
+                <% } %>
+
+                    <% }) %>
+    </ul>
+
 </body>
 
 </html>
