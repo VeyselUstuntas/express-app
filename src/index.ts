@@ -1,5 +1,7 @@
 import express, { Request, Response } from "express";
 import path from "path";
+import { DatabaseConnection } from "./core/database-connection";
+
 const app = express();
 
 app.set("views", path.join(__dirname, "../views"));
@@ -8,25 +10,44 @@ app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(express.static("node_modules"));
 
-const data = [
-    { id: 1, name: "iphone 14", price: 30000, isActive: false, isHome: false, image: "1.jpg" },
-    { id: 2, name: "iphone 15", price: 40000, isActive: true, isHome: true, image: "2.jpg" },
-    { id: 3, name: "iphone 16", price: 50000, isActive: true, isHome: false, image: "3.jpg" }
-];
+const db = new DatabaseConnection();
 
-app.get("/product/:id", (req: Request, res: Response) => {
-    const product = data.find(u => u.id === Number(req.params.id));
-    res.render("product-details", product);
+
+app.get("/product/:id", async(req: Request, res: Response) => {
+
+    try{
+        const connection = await db.getConnection();
+        const [rows] : Array<any> = await connection!.query("SELECT * FROM products WHERE id = ?",[req.params.id]);
+        res.render("product-details", rows[0]);
+
+    }catch(err:any){
+        console.log("db hata ", err.message);
+    }
+});
+
+app.get("/products", async(req: Request, res: Response) => {
+
+    try{
+        const connection = await db.getConnection();
+        const [rows] = await connection!.query("SELECT * FROM products WHERE isActive = 1");
+        res.render("products", { data: rows });
+
+    }catch(err:any){
+        console.log("db hata ", err.message);
+    }
 
 });
 
-app.use("/products", (req: Request, res: Response) => {
-    res.render("products", { data: data });
+app.get("/", async(req: Request, res: Response) => {
 
-});
+    try{
+        const connection = await db.getConnection();
+        const [rows] = await connection!.query("SELECT * FROM products  WHERE isHome = 1");
+        res.render("index", { data: rows });
 
-app.use("/", (req: Request, res: Response) => {
-    res.render('index',{ data: data });
+    }catch(err:any){
+        console.log("db hata ", err.message);
+    }
 
 });
 
