@@ -1,22 +1,25 @@
 import express, { Request, Response } from "express";
+import path from "path";
 const app = express();
 
-app.use("/products/:id", (req: Request, res: Response) => {
-    res.send("Product Details " + req.params.id);
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "ejs");
+
+app.get("/products/:id", (req: Request, res: Response) => {
+    res.render("product-details");
 
 });
 
 app.use("/products", (req: Request, res: Response) => {
-    res.send("Product Page");      
+    res.render("product");
 
 });
 
 app.use("/", (req: Request, res: Response) => {
-    res.send("Home Page");      
+    res.render('index');
 
 });
 
 app.listen(3000, () => {
-    console.log("node server listening on port 3000");
+    console.log("node app listening on port 3000");
 });
-  
